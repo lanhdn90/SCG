@@ -1,0 +1,9 @@
+{
+    "content": {
+        "home": "Home",
+        "management": "Management",
+        "maintenance": "Maintenance",
+        "alarm": "Alarm",
+        "parameter": "parameter Setting"
+    }
+}

@@ -1,0 +1,51 @@
+.root {
+  padding: 10px;
+  height: calc(100vh - 64px);
+}
+
+.header_tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+}
+
+.title_header{
+  font: {
+    style: normal;
+    weight: 600;
+    size: 20px;
+  }
+  line-height: 28px;
+}
+
+.header_admin {
+  padding-left: 20px;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  background-color: #c62828;
+  font: {
+    style: normal;
+    weight: 600;
+    size: 18px;
+  }
+  line-height: 21px;
+}
+
+.header_line {
+  margin-bottom: 20px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px;
+  background-color: #000;
+  color: #fff;
+}
+
+.table_capacity {
+  margin-bottom: 20px;
+}

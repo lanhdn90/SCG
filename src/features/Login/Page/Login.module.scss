@@ -1,0 +1,43 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.root {
+  display: flex;
+  height: 100vh;
+  background-image: url('../../../IMG/19A04080-9-768x432.jpg');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.content {
+  width: 400px;
+  margin: 30px auto;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(50px);
+}
+
+.image_company {
+  margin: 15% auto 10%;
+  width: 105px;
+  height: 71px;
+  background-image: url('../../../IMG/logo_mind.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.logo_title {
+  text-align: center;
+  margin: 20px auto;
+  width: 80%;
+  height: 35px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 30px;
+  line-height: 37px;
+  color: #535353;
+}
