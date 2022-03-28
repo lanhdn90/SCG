@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
-import { UserInfo } from '../../models';
+import { LinesOfUser } from '../../models';
 
 export interface UserState {
   loading: boolean;
-  currentUser?: UserInfo;
+  linesOfUser?: Array<LinesOfUser[]>;
   error?: string;
 }
 
 const initialState: UserState = {
   loading: false,
-  currentUser: undefined,
+  linesOfUser: undefined,
   error: undefined,
 };
 
@@ -18,12 +18,12 @@ const homeSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    fetchUserInfo(state) {
+    fetchUserInfo(state, action: PayloadAction<string>) {
       state.loading = true;
     },
-    fetchUserInfoSuccess(state, action: PayloadAction<UserInfo>) {
+    fetchUserInfoSuccess(state, action: PayloadAction<Array<LinesOfUser[]>>) {
       state.loading = false;
-      state.currentUser = action.payload;
+      state.linesOfUser = action.payload;
     },
     fetchUserInfoFailed(state, action: PayloadAction<string>) {
       state.loading = false;
@@ -36,7 +36,7 @@ export const homeActions = homeSlice.actions;
 
 export const selectUserError = (state: RootState) => state.homeReducer.error;
 export const selectLoading = (state: RootState) => state.homeReducer.loading;
-export const selectUserInfo = (state: RootState) => state.homeReducer.currentUser;
+export const selectLinesOfUser = (state: RootState) => state.homeReducer.linesOfUser;
 
 const homeReducer = homeSlice.reducer;
 export default homeReducer;

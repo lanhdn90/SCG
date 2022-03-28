@@ -1,18 +1,39 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Alert, Button, Form, Input } from 'antd';
-import { useAppDispatch, useAppSelector } from 'app/hooks';
+import { useAppSelector } from 'app/hooks';
 import { Account } from 'models';
 import React from 'react';
-import { authActions, selectError, selectIsLoggedIn } from '../../authSlice';
+import { history } from 'utils';
+import { selectError, selectIsLoggedIn } from '../../authSlice';
 import style from './FormLogin.module.scss';
 export default function FormLogin() {
   const [form] = Form.useForm();
   const isLogging = useAppSelector(selectIsLoggedIn);
   const error = useAppSelector(selectError);
-  const dispatch = useAppDispatch();
   const loginUser = (values: Account): void => {
-  console.log("🚀 ~ file: FormLogin.tsx ~ line 14 ~ loginUser ~ values", values)
-    dispatch(authActions.login(values));
+    var axios = require('axios');
+    var qs = require('qs');
+    var data = qs.stringify({
+      email: `${values.email}`,
+      password: `${values.password}`,
+    });
+    var config = {
+      method: 'post',
+      url: 'http://103.149.253.133:7654/api/v1/login',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: data,
+    };
+    axios(config)
+      .then(function (response: any) {
+        localStorage.setItem('access_token', response.data.token);
+        document.cookie = response.data.token;
+        history.push(`/User/Dashboard`);
+      })
+      .catch(function (error: any) {
+        console.log(error);
+      });
   };
 
   return (
@@ -32,7 +53,7 @@ export default function FormLogin() {
               Email <span style={{ color: 'red' }}>*</span>
             </div>
           }
-          name="username"
+          name="email"
           rules={[{ required: true, message: 'Please input your Email' }]}
         >
           <Input

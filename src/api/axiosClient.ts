@@ -3,7 +3,9 @@ import axios, { AxiosResponse } from 'axios';
 const axiosClient = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
   headers: {
-    'Content-Type': 'application/json',
+    // 'Content-Type': 'application/json',
+    'Content-Type': 'application/x-www-form-urlencoded',
+    "accept": "'application/json'"
   },
 });
 

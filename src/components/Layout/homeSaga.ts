@@ -1,12 +1,13 @@
 import { call, put } from '@redux-saga/core/effects';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { authActions } from 'features/Login/authSlice';
-import { UserInfo } from 'models';
+import { LinesOfUser } from 'models';
 import { takeLatest } from 'redux-saga/effects';
 import { authApi } from './../../api/authApi';
 import { homeActions } from './homeSlice';
-function* fetchUserInfoSaga() {
+function* fetchUserInfoSaga(action: PayloadAction<string>) {
   try {
-    const response: UserInfo = yield call(authApi.getUserInfo);
+    const response: Array<LinesOfUser[]> = yield call(authApi.getUserInfo, action.payload);
     yield put(homeActions.fetchUserInfoSuccess(response));
   } catch (error) {
     yield put(authActions.loginFailed('fetch User info failed'));

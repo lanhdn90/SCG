@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface PaginationParams {
   total_elements: number;
   total_pages: number;
@@ -31,8 +29,27 @@ export interface LoginResponse {
   [key: string]: any;
 }
 
-export interface initialPanes{
-  key: React.Key;
+export interface newItem {
+  key: string;
+  [key: string]: any;
+}
+
+export interface lineInfo {
+  spc: newItem;
+  spr: newItem;
+}
+
+export interface initialPanes {
+  key: number;
   title: string;
-  content: string;
+  content: string[];
+}
+
+export interface LinesOfUser {
+  station: string;
+  line: string;
+  gateway: string;
+  id: number;
+  spc: string[];
+  spr: string[];
 }

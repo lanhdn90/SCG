@@ -1,42 +1,19 @@
 import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import React, { useState } from 'react';
-export interface SetPointRateProps {}
-
-interface Item {
-  key: string;
-  ClinkeVCM: number;
-  ClinkeSG1: number;
-  ClinkeSG2: number;
-  Gypsum1: number;
-  Gypsum2: number;
-  NDBlackstone: number;
-  FlyAsh: number;
-  Total: number;
-  Mapei: number;
-}
-
-const originData: Item[] = [];
-for (let i = 0; i < 1; i++) {
-  originData.push({
-    key: i.toString(),
-    ClinkeVCM: i + 2 * 1,
-    ClinkeSG1: i + 2 * 2,
-    ClinkeSG2: i + 2 * 3,
-    Gypsum1: i + 2 * 4,
-    Gypsum2: i + 2 * 5,
-    NDBlackstone: i + 2 * 6,
-    FlyAsh: i + 2 * 7,
-    Total: i + 2 * 8,
-    Mapei: i + 2 * 9,
-  });
+import { authApi } from 'api/authApi';
+import { lineInfo, newItem } from 'models';
+import React, { useEffect, useState } from 'react';
+export interface SetPointRateProps {
+  content: string[];
+  database: lineInfo;
+  updateLine: (object: newItem, type: boolean) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
-  inputType: 'number' | 'text';
-  record: Item;
+  inputType: 'number';
+  record: newItem;
   index: number;
   children: React.ReactNode;
 }
@@ -76,13 +53,18 @@ const EditableCell: React.FC<EditableCellProps> = ({
 };
 
 export default function SetPointCapacity(props: SetPointRateProps) {
+  const { content, database, updateLine } = props;
   const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
+  const [data, setData] = useState<newItem[]>([]);
   const [editingKey, setEditingKey] = useState('');
 
-  const isEditing = (record: Item) => record.key === editingKey;
+  useEffect(() => {
+    setData([database.spc]);
+  }, [database]);
 
-  const edit = (record: Partial<Item> & { key: React.Key }) => {
+  const isEditing = (record: newItem) => record.key === editingKey;
+
+  const edit = (record: Partial<newItem> & { key: React.Key }) => {
     form.setFieldsValue({ ...record });
     setEditingKey(record.key);
   };
@@ -93,7 +75,8 @@ export default function SetPointCapacity(props: SetPointRateProps) {
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await form.validateFields()) as Item;
+      const row = (await form.validateFields()) as newItem;
+      updateLine(row, true);
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -114,25 +97,12 @@ export default function SetPointCapacity(props: SetPointRateProps) {
     }
   };
 
-  const clo = [
-    'ClinkeVCM',
-    'ClinkeSG1',
-    'ClinkeSG2',
-    'Gypsum1',
-    'Gypsum2',
-    'NDBlackstone',
-    'FlyAsh',
-    'Total',
-    'Mapei',
-    'Action',
-  ];
-
-  const columns = clo.map((item, i) => {
-    if (i === clo.length - 1) {
+  const columns = content.map((item, i) => {
+    if (i === content.length - 1) {
       return {
         title: item,
         dataIndex: item,
-        render: (_: any, record: Item) => {
+        render: (_: any, record: newItem) => {
           const editable = isEditing(record);
           return editable ? (
             <span>
@@ -169,7 +139,7 @@ export default function SetPointCapacity(props: SetPointRateProps) {
     }
     return {
       ...col,
-      onCell: (record: Item) => ({
+      onCell: (record: newItem) => ({
         record,
         inputType: 'number',
         dataIndex: col.dataIndex,

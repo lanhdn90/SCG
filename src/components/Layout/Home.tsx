@@ -1,20 +1,20 @@
-import { Layout } from "antd";
-import { useAppDispatch } from "app/hooks";
-import HeaderComponent from "components/Common/Header/Header";
-import UserFeature from "features/User";
-import React, { useEffect, useState } from "react";
-import { Route, Switch } from "react-router-dom";
-import style from "./Home.module.scss";
-import { homeActions } from "./homeSlice";
+import { Layout } from 'antd';
+import { useAppDispatch } from 'app/hooks';
+import HeaderComponent from 'components/Common/Header/Header';
+import UserFeature from 'features/User';
+import React, { useEffect, useState } from 'react';
+import { Route, Switch } from 'react-router-dom';
+import style from './Home.module.scss';
+import { homeActions } from './homeSlice';
 export default function Home() {
-  const { Header,Content } = Layout;
+  const { Header, Content } = Layout;
   const [visible, setVisible] = useState<boolean>(false);
 
   const dispatch = useAppDispatch();
   useEffect(() => {
-    dispatch(homeActions.fetchUserInfo());
+    var token = localStorage.getItem('access_token');
+    dispatch(homeActions.fetchUserInfo(token ? token : 'null'));
   }, [dispatch]);
-
 
   return (
     <Layout className={style.root}>
@@ -25,7 +25,7 @@ export default function Home() {
         <Content>
           <Switch>
             <Route path="/user">
-              <UserFeature/>
+              <UserFeature />
             </Route>
           </Switch>
         </Content>

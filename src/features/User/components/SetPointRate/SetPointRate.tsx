@@ -1,42 +1,17 @@
 import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import React, { useState } from 'react';
-export interface SetPointRateProps {}
-
-interface Item {
-  key: string;
-  ClinkeVCM: number;
-  ClinkeSG1: number;
-  ClinkeSG2: number;
-  Gypsum1: number;
-  Gypsum2: number;
-  NDBlackstone: number;
-  FlyAsh: number;
-  Total: number;
-  Mapei: number;
-}
-
-const originData: Item[] = [];
-for (let i = 0; i < 1; i++) {
-  originData.push({
-    key: i.toString(),
-    ClinkeVCM: i + 1 * 1,
-    ClinkeSG1: i + 1 * 2,
-    ClinkeSG2: i + 1 * 3,
-    Gypsum1: i + 1 * 4,
-    Gypsum2: i + 1 * 5,
-    NDBlackstone: i + 1 * 6,
-    FlyAsh: i + 1 * 7,
-    Total: i + 1 * 8,
-    Mapei: i + 1 * 9,
-  });
+import { lineInfo, newItem } from 'models';
+import React, { useEffect, useState } from 'react';
+export interface SetPointRateProps {
+  content: string[];
+  database: lineInfo;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
   editing: boolean;
   dataIndex: string;
   title: any;
-  inputType: 'number' | 'text';
-  record: Item;
+  inputType: 'number';
+  record: newItem;
   index: number;
   children: React.ReactNode;
 }
@@ -77,13 +52,19 @@ const EditableCell: React.FC<EditableCellProps> = ({
 
 export default function SetPointRate(props: SetPointRateProps) {
   const [form] = Form.useForm();
-  const [data, setData] = useState(originData);
+  const { content, database } = props;
+
+  const [data, setData] = useState<newItem[]>([]);
+
+  useEffect(() => {
+    setData([database.spr]);
+  }, [database]);
+
   const [editingKey, setEditingKey] = useState('');
 
-  const isEditing = (record: Item) => record.key === editingKey;
+  const isEditing = (record: newItem) => record.key === editingKey;
 
-  const edit = (record: Partial<Item> & { key: React.Key }) => {
-    console.log('🚀 ~ file: SetPointRate.tsx ~ line 86 ~ edit ~ record', record);
+  const edit = (record: Partial<newItem> & { key: React.Key }) => {
     form.setFieldsValue({ ...record });
     setEditingKey(record.key);
   };
@@ -94,7 +75,7 @@ export default function SetPointRate(props: SetPointRateProps) {
 
   const save = async (key: React.Key) => {
     try {
-      const row = (await form.validateFields()) as Item;
+      const row = (await form.validateFields()) as newItem;
       const newData = [...data];
       const index = newData.findIndex((item) => key === item.key);
       if (index > -1) {
@@ -115,25 +96,12 @@ export default function SetPointRate(props: SetPointRateProps) {
     }
   };
 
-  const clo = [
-    'ClinkeVCM',
-    'ClinkeSG1',
-    'ClinkeSG2',
-    'Gypsum1',
-    'Gypsum2',
-    'NDBlackstone',
-    'FlyAsh',
-    'Total',
-    'Mapei',
-    'Action',
-  ];
-
-  const columns = clo.map((item, i) => {
-    if (i === clo.length - 1) {
+  const columns = content.map((item, i) => {
+    if (i === content.length - 1) {
       return {
         title: item,
         dataIndex: item,
-        render: (_: any, record: Item) => {
+        render: (_: any, record: newItem) => {
           const editable = isEditing(record);
           return editable ? (
             <span>
@@ -170,7 +138,7 @@ export default function SetPointRate(props: SetPointRateProps) {
     }
     return {
       ...col,
-      onCell: (record: Item) => ({
+      onCell: (record: newItem) => ({
         record,
         inputType: 'number',
         dataIndex: col.dataIndex,
