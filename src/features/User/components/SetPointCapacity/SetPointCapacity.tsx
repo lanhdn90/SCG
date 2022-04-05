@@ -1,11 +1,10 @@
 import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
-import { authApi } from 'api/authApi';
 import { lineInfo, newItem } from 'models';
 import React, { useEffect, useState } from 'react';
 export interface SetPointRateProps {
   content: string[];
   database: lineInfo;
-  updateLine: (object: newItem, type: boolean) => void;
+  updateLine: (object: newItem, type: number) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -76,22 +75,8 @@ export default function SetPointCapacity(props: SetPointRateProps) {
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as newItem;
-      updateLine(row, true);
-      const newData = [...data];
-      const index = newData.findIndex((item) => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...row,
-        });
-        setData(newData);
-        setEditingKey('');
-      } else {
-        newData.push(row);
-        setData(newData);
-        setEditingKey('');
-      }
+      updateLine(row, 1);
+      setEditingKey('');
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }

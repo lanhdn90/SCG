@@ -10,7 +10,10 @@ export default function FormLogin() {
   const [form] = Form.useForm();
   const isLogging = useAppSelector(selectIsLoggedIn);
   const error = useAppSelector(selectError);
+  // const dispatch = useAppDispatch();
+
   const loginUser = (values: Account): void => {
+    // dispatch(authActions.login(values));
     var axios = require('axios');
     var qs = require('qs');
     var data = qs.stringify({
@@ -19,7 +22,7 @@ export default function FormLogin() {
     });
     var config = {
       method: 'post',
-      url: 'http://103.149.253.133:7654/api/v1/login',
+      url: 'http://192.168.1.11:8000/api/v1/login',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

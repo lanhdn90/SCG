@@ -9,10 +9,7 @@
   justify-content: center;
 }
 
-.content {
-}
-
-.title_header{
+.title_header {
   font: {
     style: normal;
     weight: 600;
@@ -48,4 +45,14 @@
 
 .table_capacity {
   margin-bottom: 20px;
+}
+
+.modal_title {
+  text-align: center;
+  font: {
+    style: normal;
+    weight: 600;
+    size: 20px;
+  }
+  line-height: 28px;
 }

@@ -1,3 +1,5 @@
+import React from 'react';
+
 export interface PaginationParams {
   total_elements: number;
   total_pages: number;
@@ -37,12 +39,14 @@ export interface newItem {
 export interface lineInfo {
   spc: newItem;
   spr: newItem;
+  freq: newItem;
 }
 
 export interface initialPanes {
   key: number;
   title: string;
   content: string[];
+  frequency: string[] | undefined;
 }
 
 export interface LinesOfUser {
@@ -52,4 +56,16 @@ export interface LinesOfUser {
   id: number;
   spc: string[];
   spr: string[];
+  freq?: string[];
+}
+
+export interface historyInfo {
+  key?: React.Key;
+  update_date: number;
+  user: string;
+  measurement: string;
+  message: string;
+  station?: string;
+  line?: string;
+  gateway?: string;
 }

@@ -1,8 +1,8 @@
 import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
 import { lineInfo, newItem } from 'models';
 import React, { useEffect, useState } from 'react';
-export interface SetPointRateProps {
-  content: string[];
+export interface FrequencyTableProps {
+  frequency: string[];
   database: lineInfo;
   updateLine: (object: newItem, type: number) => void;
 }
@@ -27,7 +27,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   children,
   ...restProps
 }) => {
-  const inputNode = <InputNumber disabled={title === 'Total' ? true : false} />;
+  const inputNode = <InputNumber/>;
 
   return (
     <td {...restProps}>
@@ -35,25 +35,12 @@ const EditableCell: React.FC<EditableCellProps> = ({
         <Form.Item
           name={dataIndex}
           style={{ margin: 0 }}
-          rules={
-            dataIndex !== 'Total'
-              ? [
-                  {
-                    required: true,
-                    message: `Please Input ${title}!`,
-                  },
-                  {
-                    pattern: /^(0*100{1,1}\.?((?<=\.)0*)?%?$)|(^0*\d{0,2}\.?((?<=\.)\d*)?%?)$/,
-                    message: 'Paramter value range: [0 ~ 100]',
-                  },
-                ]
-              : [
-                  {
-                    required: true,
-                    message: `Please Input ${title}!`,
-                  },
-                ]
-          }
+          rules={[
+            {
+              required: true,
+              message: `Please Input ${title}!`,
+            },
+          ]}
         >
           {inputNode}
         </Form.Item>
@@ -64,17 +51,15 @@ const EditableCell: React.FC<EditableCellProps> = ({
   );
 };
 
-export default function SetPointRate(props: SetPointRateProps) {
+export default function FrequencyTable(props: FrequencyTableProps) {
+  const { frequency, database, updateLine } = props;
   const [form] = Form.useForm();
-  const { content, database, updateLine } = props;
-
   const [data, setData] = useState<newItem[]>([]);
+  const [editingKey, setEditingKey] = useState('');
 
   useEffect(() => {
-    setData([database.spr]);
+    setData(database.freq?[database.freq]:[]);
   }, [database]);
-
-  const [editingKey, setEditingKey] = useState('');
 
   const isEditing = (record: newItem) => record.key === editingKey;
 
@@ -90,15 +75,15 @@ export default function SetPointRate(props: SetPointRateProps) {
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as newItem;
-      updateLine(row, 2);
+      updateLine(row, 3);
       setEditingKey('');
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
   };
 
-  const columns = content.map((item, i) => {
-    if (i === content.length - 1) {
+  const columns = frequency.map((item, i) => {
+    if (i === frequency.length - 1) {
       return {
         title: item,
         dataIndex: item,
@@ -130,6 +115,7 @@ export default function SetPointRate(props: SetPointRateProps) {
         title: item,
         dataIndex: item,
         editable: true,
+        
       };
   });
 
