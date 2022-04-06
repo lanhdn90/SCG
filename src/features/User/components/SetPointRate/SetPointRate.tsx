@@ -1,10 +1,11 @@
-import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import { Button, Form, InputNumber, Popconfirm, Popover, Table, Typography } from 'antd';
 import { lineInfo, newItem } from 'models';
 import React, { useEffect, useState } from 'react';
+import Accuracy from '../Accuracy/Accuracy';
 export interface SetPointRateProps {
   content: string[];
   database: lineInfo;
-  updateLine: (object: newItem, type: number) => void;
+  updateLine: (object: newItem, type: number, code: string) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -67,7 +68,8 @@ const EditableCell: React.FC<EditableCellProps> = ({
 export default function SetPointRate(props: SetPointRateProps) {
   const [form] = Form.useForm();
   const { content, database, updateLine } = props;
-
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [objectValue, setObjectValue] = useState<newItem | undefined>(undefined);
   const [data, setData] = useState<newItem[]>([]);
 
   useEffect(() => {
@@ -85,13 +87,13 @@ export default function SetPointRate(props: SetPointRateProps) {
 
   const cancel = () => {
     setEditingKey('');
+    setObjectValue(undefined);
   };
 
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as newItem;
-      updateLine(row, 2);
-      setEditingKey('');
+      setObjectValue(row);
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
@@ -106,14 +108,26 @@ export default function SetPointRate(props: SetPointRateProps) {
           const editable = isEditing(record);
           return editable ? (
             <span>
-              <Typography.Link
-                onClick={() => save(record.key)}
-                style={{
-                  marginRight: 8,
-                }}
+              <Popover
+                title={<div style={{ textAlign: 'center' }}>Accuracy</div>}
+                content={
+                  <Accuracy
+                    setIsAuth={setIsAuth}
+                    isAuth={isAuth}
+                    cancel={cancel}
+                    updateLine={updateLine}
+                    objectValue={objectValue}
+                    content={2}
+                  />
+                }
+                trigger="click"
+                visible={isAuth}
+                onVisibleChange={() => setIsAuth(!isAuth)}
               >
-                Save
-              </Typography.Link>
+                <Button type="link" onClick={() => save(record.key)}>
+                  Save
+                </Button>
+              </Popover>
               <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                 <Button type="link">Cancel</Button>
               </Popconfirm>

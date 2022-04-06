@@ -1,11 +1,11 @@
 import { initialPanes, newItem } from 'models';
 import React from 'react';
 
-export const customedHeadrTable = (array: string[]) => {
+export const customizeHeaderTable = (array: string[]) => {
   const newArray = array.filter((item) => item !== 'Total');
   return [...newArray, 'Total', 'Action'];
 };
-export const customedHeadrFrequencyTable = (array: string[]) => {
+export const customizeHeaderFrequencyTable = (array: string[]) => {
   const newArray = array.filter((item) => item !== 'Total');
   return [...newArray, 'Action'];
 };

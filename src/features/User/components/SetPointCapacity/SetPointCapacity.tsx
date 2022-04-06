@@ -1,10 +1,11 @@
-import { Button, Form, Input, InputNumber, Popconfirm, Popover, Table, Typography } from 'antd';
+import { Button, Form, InputNumber, Popconfirm, Popover, Table, Typography } from 'antd';
 import { lineInfo, newItem } from 'models';
 import React, { useEffect, useState } from 'react';
+import Accuracy from '../Accuracy/Accuracy';
 export interface SetPointRateProps {
   content: string[];
   database: lineInfo;
-  updateLine: (object: newItem, type: number) => void;
+  updateLine: (object: newItem, type: number, code: string) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -57,6 +58,7 @@ export default function SetPointCapacity(props: SetPointRateProps) {
   const [data, setData] = useState<newItem[]>([]);
   const [editingKey, setEditingKey] = useState('');
   const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [objectValue, setObjectValue] = useState<newItem | undefined>(undefined);
   useEffect(() => {
     setData([database.spc]);
   }, [database]);
@@ -70,21 +72,13 @@ export default function SetPointCapacity(props: SetPointRateProps) {
 
   const cancel = () => {
     setEditingKey('');
+    setObjectValue(undefined);
   };
-
-  // useEffect(() => {
-  //   if (isAuth) {
-  //     console.log('🚀 ~ file: SetPointCapacity.tsx ~ line 77 ~ useEffect ~ isAuth', isAuth);
-  //     setIsAuth(false);
-  //   } else console.log('🚀 ~ file: SetPointCapacity.tsx ~ line 77 ~ useEffect ~ isAuth', isAuth);
-  // }, [isAuth]);
 
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as newItem;
-      console.log('🚀 ~ file: SetPointCapacity.tsx ~ line 85 ~ save ~ row', row);
-      // updateLine(row, 1);
-      // setEditingKey('');
+      setObjectValue(row);
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
@@ -99,26 +93,23 @@ export default function SetPointCapacity(props: SetPointRateProps) {
           const editable = isEditing(record);
           return editable ? (
             <span>
-              {/* <Typography.Link
-                onClick={() => save(record.key)}
-                style={{
-                  marginRight: 8,
-                }}
-              >
-                Save
-              </Typography.Link> */}
               <Popover
-                style={{ width: 250 }}
                 title={<div style={{ textAlign: 'center' }}>Accuracy</div>}
+                content={
+                  <Accuracy
+                    setIsAuth={setIsAuth}
+                    isAuth={isAuth}
+                    cancel={cancel}
+                    updateLine={updateLine}
+                    objectValue={objectValue}
+                    content={1}
+                  />
+                }
                 trigger="click"
-                // visible={isAuth}
-                // onVisibleChange={() => setIsAuth(!isAuth)}
+                visible={isAuth}
+                onVisibleChange={() => setIsAuth(!isAuth)}
               >
-                <Button
-                  type="link"
-                  onClick={() => save(record.key)}
-
-                >
+                <Button type="link" onClick={() => save(record.key)}>
                   Save
                 </Button>
               </Popover>

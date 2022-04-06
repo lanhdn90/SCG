@@ -14,8 +14,8 @@ import { IoLink } from 'react-icons/io5';
 import {
   calculationDataSPC,
   calculationDataSPR,
-  customedHeadrFrequencyTable,
-  customedHeadrTable
+  customizeHeaderFrequencyTable,
+  customizeHeaderTable,
 } from 'utils/common';
 import style from './Dashboard.module.scss';
 export interface DashboardProps {}
@@ -39,9 +39,9 @@ export default function Dashboard(props: DashboardProps) {
             ...array,
             {
               title: `${i.station}_${i.line}`,
-              content: customedHeadrTable(i.spc),
+              content: customizeHeaderTable(i.spc),
               key: i.id,
-              frequency: i.freq ? customedHeadrFrequencyTable(i.freq) : undefined,
+              frequency: i.freq ? customizeHeaderFrequencyTable(i.freq) : undefined,
             },
           ];
         });
@@ -69,7 +69,7 @@ export default function Dashboard(props: DashboardProps) {
     })();
   }, [activeKey]);
 
-  const updateLine = async (values: newItem, type: number) => {
+  const updateLine = async (values: newItem, type: number, code: string) => {
     var token = localStorage.getItem('access_token');
     var axios = require('axios');
     var config = {
@@ -101,14 +101,14 @@ export default function Dashboard(props: DashboardProps) {
       .catch(function (error: any) {
         console.log(error);
       });
-      await dispatch(
-        historyActions.fetchHistoryList({
-          id: activeKey,
-          token: token,
-          _limit: 10,
-          _page: 1,
-        })
-      );
+    await dispatch(
+      historyActions.fetchHistoryList({
+        id: activeKey,
+        token: token,
+        _limit: 10,
+        _page: 1,
+      })
+    );
   };
 
   const onChange = (activeKey: React.Key) => {

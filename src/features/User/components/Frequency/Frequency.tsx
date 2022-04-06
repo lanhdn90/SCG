@@ -1,10 +1,11 @@
-import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import { Button, Form, InputNumber, Popconfirm, Popover, Table, Typography } from 'antd';
 import { lineInfo, newItem } from 'models';
 import React, { useEffect, useState } from 'react';
+import Accuracy from '../Accuracy/Accuracy';
 export interface FrequencyTableProps {
   frequency: string[];
   database: lineInfo;
-  updateLine: (object: newItem, type: number) => void;
+  updateLine: (object: newItem, type: number, code: string) => void;
 }
 
 interface EditableCellProps extends React.HTMLAttributes<HTMLElement> {
@@ -27,7 +28,7 @@ const EditableCell: React.FC<EditableCellProps> = ({
   children,
   ...restProps
 }) => {
-  const inputNode = <InputNumber/>;
+  const inputNode = <InputNumber />;
 
   return (
     <td {...restProps}>
@@ -56,9 +57,11 @@ export default function FrequencyTable(props: FrequencyTableProps) {
   const [form] = Form.useForm();
   const [data, setData] = useState<newItem[]>([]);
   const [editingKey, setEditingKey] = useState('');
+  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [objectValue, setObjectValue] = useState<newItem | undefined>(undefined);
 
   useEffect(() => {
-    setData(database.freq?[database.freq]:[]);
+    setData(database.freq ? [database.freq] : []);
   }, [database]);
 
   const isEditing = (record: newItem) => record.key === editingKey;
@@ -70,13 +73,13 @@ export default function FrequencyTable(props: FrequencyTableProps) {
 
   const cancel = () => {
     setEditingKey('');
+    setObjectValue(undefined);
   };
 
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as newItem;
-      updateLine(row, 3);
-      setEditingKey('');
+      setObjectValue(row);
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
@@ -87,18 +90,31 @@ export default function FrequencyTable(props: FrequencyTableProps) {
       return {
         title: item,
         dataIndex: item,
+        width: '221.2px',
         render: (_: any, record: newItem) => {
           const editable = isEditing(record);
           return editable ? (
             <span>
-              <Typography.Link
-                onClick={() => save(record.key)}
-                style={{
-                  marginRight: 8,
-                }}
+              <Popover
+                title={<div style={{ textAlign: 'center' }}>Accuracy</div>}
+                content={
+                  <Accuracy
+                    setIsAuth={setIsAuth}
+                    isAuth={isAuth}
+                    cancel={cancel}
+                    updateLine={updateLine}
+                    objectValue={objectValue}
+                    content={3}
+                  />
+                }
+                trigger="click"
+                visible={isAuth}
+                onVisibleChange={() => setIsAuth(!isAuth)}
               >
-                Save
-              </Typography.Link>
+                <Button type="link" onClick={() => save(record.key)}>
+                  Save
+                </Button>
+              </Popover>
               <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                 <Button type="link">Cancel</Button>
               </Popconfirm>
@@ -115,7 +131,6 @@ export default function FrequencyTable(props: FrequencyTableProps) {
         title: item,
         dataIndex: item,
         editable: true,
-        
       };
   });
 
