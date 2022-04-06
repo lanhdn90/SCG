@@ -74,7 +74,7 @@ export default function Dashboard(props: DashboardProps) {
     var axios = require('axios');
     var config = {
       method: 'patch',
-      url: `http://192.168.1.11:8000/api/v1/devices/${activeKey}?measurement=${
+      url: `http://103.149.253.133:8000/api/v1/devices/${activeKey}?measurement=${
         type === 1 ? 'spc' : type === 2 ? 'spr' : 'freq'
       }&token=${token}`,
       headers: {

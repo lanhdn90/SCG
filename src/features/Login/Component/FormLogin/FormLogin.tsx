@@ -22,7 +22,7 @@ export default function FormLogin() {
     });
     var config = {
       method: 'post',
-      url: 'http://192.168.1.11:8000/api/v1/login',
+      url: 'http://103.149.253.133:8000/api/v1/login',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

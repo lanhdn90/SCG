@@ -1,4 +1,4 @@
-import { Button, Form, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import { Button, Form, Input, InputNumber, Popconfirm, Popover, Table, Typography } from 'antd';
 import { lineInfo, newItem } from 'models';
 import React, { useEffect, useState } from 'react';
 export interface SetPointRateProps {
@@ -56,7 +56,7 @@ export default function SetPointCapacity(props: SetPointRateProps) {
   const [form] = Form.useForm();
   const [data, setData] = useState<newItem[]>([]);
   const [editingKey, setEditingKey] = useState('');
-
+  const [isAuth, setIsAuth] = useState<boolean>(false);
   useEffect(() => {
     setData([database.spc]);
   }, [database]);
@@ -72,11 +72,19 @@ export default function SetPointCapacity(props: SetPointRateProps) {
     setEditingKey('');
   };
 
+  // useEffect(() => {
+  //   if (isAuth) {
+  //     console.log('🚀 ~ file: SetPointCapacity.tsx ~ line 77 ~ useEffect ~ isAuth', isAuth);
+  //     setIsAuth(false);
+  //   } else console.log('🚀 ~ file: SetPointCapacity.tsx ~ line 77 ~ useEffect ~ isAuth', isAuth);
+  // }, [isAuth]);
+
   const save = async (key: React.Key) => {
     try {
       const row = (await form.validateFields()) as newItem;
-      updateLine(row, 1);
-      setEditingKey('');
+      console.log('🚀 ~ file: SetPointCapacity.tsx ~ line 85 ~ save ~ row', row);
+      // updateLine(row, 1);
+      // setEditingKey('');
     } catch (errInfo) {
       console.log('Validate Failed:', errInfo);
     }
@@ -91,14 +99,29 @@ export default function SetPointCapacity(props: SetPointRateProps) {
           const editable = isEditing(record);
           return editable ? (
             <span>
-              <Typography.Link
+              {/* <Typography.Link
                 onClick={() => save(record.key)}
                 style={{
                   marginRight: 8,
                 }}
               >
                 Save
-              </Typography.Link>
+              </Typography.Link> */}
+              <Popover
+                style={{ width: 250 }}
+                title={<div style={{ textAlign: 'center' }}>Accuracy</div>}
+                trigger="click"
+                // visible={isAuth}
+                // onVisibleChange={() => setIsAuth(!isAuth)}
+              >
+                <Button
+                  type="link"
+                  onClick={() => save(record.key)}
+
+                >
+                  Save
+                </Button>
+              </Popover>
               <Popconfirm title="Sure to cancel?" onConfirm={cancel}>
                 <Button type="link">Cancel</Button>
               </Popconfirm>
